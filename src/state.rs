@@ -5,7 +5,6 @@ use std::path::PathBuf;
 use crate::ui;
 use crate::io;
 
-#[derive(Default)]
 pub struct PhotoCullerApp {
     pub current_path: PathBuf,
     pub images: Vec<PathBuf>,
@@ -16,7 +15,7 @@ impl Default for PhotoCullerApp {
         let start_path = PathBuf::from(".");
         let found_images = io::find_images::find_images(&start_path);
 
-        self {
+        Self {
             current_path: start_path,
             images: found_images,
         }
@@ -30,7 +29,7 @@ impl App for PhotoCullerApp {
         });
 
         egui::TopBottomPanel::bottom("filmstrip").show(ctx, |ui| {
-            ui::draw_filmstrip::draw_filmstrip(ui);
+            ui::draw_filmstrip::draw_filmstrip(ui, &self.images);
         });
 
         egui::SidePanel::right("info").show(ctx, |ui| {

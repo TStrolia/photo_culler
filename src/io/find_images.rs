@@ -4,7 +4,7 @@ pub fn find_images(dir: &Path) -> Vec<PathBuf> {
     let mut images = Vec::new();
 
     if let Ok(entries) = fs::read_dir(dir) {
-        for entry in entris.flatten() {
+        for entry in entries.flatten() {
             let path =  entry.path();
 
             if let Some(extension) = path.extension() {
