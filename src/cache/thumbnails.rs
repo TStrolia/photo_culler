@@ -1,6 +1,5 @@
 use std::{fs, path::Path};
 use egui::ColorImage;
-use image::imageops::FilterType;
 
 use crate::processing::image_ops;
 
