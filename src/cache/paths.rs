@@ -7,6 +7,6 @@ pub fn get_thumb_path(original_path: &Path, temp_dir: &Path) -> PathBuf {
     original_path.hash(&mut hasher);
     let hash = hasher.finish();
 
-    let filename = format!("{}.thumb", hash);
+    let filename = format!("cache/{}.png", hash);
     temp_dir.join(filename)
 }
