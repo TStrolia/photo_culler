@@ -1,6 +1,13 @@
-use eframe::{App, Frame};
-use egui::{Context, TextureHandle};
-use std::{path::PathBuf, collections::HashMap};
+use eframe::{
+    App,
+    Frame};
+use egui::{
+    Context,
+    TextureHandle};
+use std::{
+    path::PathBuf,
+    collections::HashMap,
+    thread};
 use tempfile::TempDir;
 
 use crate::ui;

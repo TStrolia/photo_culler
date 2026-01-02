@@ -1,5 +1,11 @@
-use std::{fs, path::Path};
+use std::{
+    io::BufWriter,
+    fs::File,
+    path::Path};
 use egui::ColorImage;
+use image::{
+    codecs::jpeg::JpegEncoder,
+    ExtendedColorType};
 
 use crate::processing::image_ops;
 
@@ -11,8 +17,21 @@ pub fn generate_thumbnail(original: &Path, thumb_path: &Path) -> bool {
     if let Ok(img) = image::open(original) {
         let thumb = image_ops::resize_to_thumbnail(&img);
 
-        if thumb.save(thumb_path).is_ok() {
-            return true;
+        let rgb_img = thumb.to_rgb8();
+
+        if let Ok(file) = File::create(thumb_path) {
+            let ref_writer = BufWriter::new(file);
+
+            let mut encoder = JpegEncoder::new_with_quality(ref_writer, 60);
+
+            if encoder.encode(
+                rgb_img.as_raw(),
+                rgb_img.width(),
+                rgb_img.height(),
+                ExtendedColorType::Rgb8
+            ).is_ok() {
+                return true;
+            }
         }
     }
     false
