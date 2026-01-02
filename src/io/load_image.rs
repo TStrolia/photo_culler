@@ -6,7 +6,7 @@ pub fn load_image(path: &Path) -> Option<ColorImage> {
 
     let size = [img.width() as usize, img.height() as usize];
 
-    let image_buffer = img.into_rgb8();
+    let image_buffer = img.into_rgba8();
 
     let pixels = image_buffer.into_flat_samples();
 
