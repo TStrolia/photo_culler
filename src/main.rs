@@ -1,6 +1,8 @@
 mod state;
 mod ui;
 pub mod io;
+mod cache;
+mod processing;
 
 use state::PhotoCullerApp;
 use eframe::{self, NativeOptions};
