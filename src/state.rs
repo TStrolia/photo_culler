@@ -69,8 +69,8 @@ impl App for PhotoCullerApp {
         });
 
             if self.current_path != previous_path {
-            self.current_path = previous_path.clone();
-            self.current_path = target_path;
+            // self.current_path = previous_path.clone();
+            // self.current_path = target_path;
 
             self.selected_image = None;
             self.current_texture = None;

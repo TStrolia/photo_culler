@@ -2,6 +2,8 @@ use std::{fs, path::Path};
 use egui::ColorImage;
 use image::imageops::FilterType;
 
+use crate::processing::image_ops;
+
 pub fn generate_thumbnail(original: &Path, thumb_path: &Path) -> bool {
     if thumb_path.exists() {
         return true;
