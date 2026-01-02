@@ -1,7 +1,7 @@
 use egui::Ui;
 use std::path::PathBuf;
 
-pub fn draw_filmstrip(ui: &mut Ui, images: &[PathBuf]) {
+pub fn draw_filmstrip(ui: &mut Ui, images: &[PathBuf], selection: &mut Option<PathBuf>) {
     ui.heading("Filmstrip");
     
     egui::ScrollArea::horizontal().show(ui, |ui| {
@@ -11,7 +11,13 @@ pub fn draw_filmstrip(ui: &mut Ui, images: &[PathBuf]) {
                     .map(|n| n.to_string_lossy())
                     .unwrap_or_else(|| "???".into());
 
-                ui.button(name);
+                let is_selected = selection.as_ref() == Some(path);
+
+                if ui.selectable_label(is_selected, name).clicked() {
+                    *selection = Some(path.clone());
+                }
+
+                // ui.button(name);
             }
         });
     });
