@@ -59,15 +59,22 @@ impl App for PhotoCullerApp {
         let mut new_selection = self.selected_image.clone();
 
         if new_selection != self.selected_image {
+            // PRINT: Confirm the click was registered
+            println!("DEBUG: Selection changed! New selection: {:?}", new_selection);
+
             self.selected_image = new_selection;
 
             if let Some(path) = &self.selected_image {
+                // Try to load
                 if let Some(color_image) = io::load_image::load_image(path) {
+                    println!("DEBUG: Uploading texture to GPU...");
                     self.current_texture = Some(ctx.load_texture(
-                        "active_image", 
+                        "main_image", 
                         color_image, 
-                    Default::default()
-                ))
+                        Default::default()
+                    ));
+                } else {
+                    println!("DEBUG: load_image returned None");
                 }
             }
         }
