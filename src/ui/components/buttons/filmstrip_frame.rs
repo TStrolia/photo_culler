@@ -2,7 +2,7 @@ use egui::Ui;
 use eframe::egui;
 use egui::{Frame, Sense, UiBuilder};
 
-pub fn frame(
+pub fn film_frame(
     ui: &mut Ui,
     image: egui::Image<'static>,
     text: &str,
