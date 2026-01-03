@@ -1,5 +1,5 @@
-use eframe::{egui, glow::LINE_SMOOTH};
-use egui::{Frame, LayerId, Order, Sense, Stroke, Ui, response};
+use eframe::{egui};
+use egui::{Ui, Frame, Sense, Stroke, LayerId, Order, StrokeKind, Color32};
 
 pub fn film_frame(
     ui: &mut Ui,
@@ -9,10 +9,12 @@ pub fn film_frame(
     selected: bool,
 ) -> egui::Response {
     const PADDING: f32 = 4.0;
-    const RADIUS: f32 = 4.0;
+    const RADIUS: u8 = 4;
     const IMAGE_HEIGHT: f32 = 128.0;
 
     let content_response = Frame::default()
+        .fill(Color32::TRANSPARENT)
+        .stroke(Stroke::NONE)
         .inner_margin(PADDING)
         .show(ui, |ui| {
             ui.set_height(height - (PADDING * 2.0));
@@ -22,7 +24,7 @@ pub fn film_frame(
             ui.vertical(|ui| {
                 ui.centered_and_justified(|ui| {
                     ui.add(
-                image.max_height(IMAGE_HEIGHT).corner_radius(0.0)
+                image.max_height(IMAGE_HEIGHT)
                     );
                 });
 
@@ -72,6 +74,7 @@ pub fn film_frame(
         RADIUS,
         bg_fill,
         border_stroke,
+        StrokeKind::Inside,
     );
 
     response

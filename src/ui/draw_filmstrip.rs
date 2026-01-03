@@ -1,5 +1,5 @@
-use egui::{Context, TextureHandle, Ui, response};
-use std::path::{Path, PathBuf};
+use egui::{Context, TextureHandle, Ui};
+use std::path::{PathBuf};
 use std::collections::{HashMap, HashSet};
 
 use crate::ui::components;
