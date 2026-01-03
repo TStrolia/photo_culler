@@ -51,12 +51,19 @@ impl App for PhotoCullerApp {
         let previous_path = self.current_path.clone();
         let previous_selection = self.selected_image.clone();
 
-        egui::SidePanel::left("tree").show(ctx, |ui| {
+        egui::SidePanel::left("file_tree")
+        .default_width(325.0)
+        .min_width(250.0)
+        .resizable(true)
+        .show(ctx, |ui| {
             let root = PathBuf::from(".");
             ui::draw_tree::draw_tree(ui, &root, &mut self.current_path);
         });
 
-        egui::TopBottomPanel::bottom("filmstrip").show(ctx, |ui| {
+        egui::TopBottomPanel::bottom("thumb_filmstrip")
+        .exact_height(160.0)
+        .resizable(false)
+        .show(ctx, |ui| {
             ui::draw_filmstrip::draw_filmstrip(
                 ui,
                 &self.images,
@@ -67,7 +74,11 @@ impl App for PhotoCullerApp {
             );
         });
 
-        egui::SidePanel::right("info").show(ctx, |ui| {
+        egui::SidePanel::right("metadata")
+        .default_width(450.0)
+        .width_range(275.0..=700.0)
+        .resizable(true)
+        .show(ctx, |ui| {
             ui::draw_info::draw_info(ui);
         });
 
@@ -75,36 +86,55 @@ impl App for PhotoCullerApp {
             ui::draw_viewer::draw_viewer(ui, &self.current_texture);
         });
 
-            if self.current_path != previous_path {
-            // self.current_path = previous_path.clone();
-            // self.current_path = target_path;
-
+        if self.current_path != previous_path {
             self.selected_image = None;
             self.current_texture = None;
             self.images = io::find_images::find_images(&self.current_path);
             self.thumbnail_cache.clear(); // Clear old thumbnails from RAM
 
-            // 2. BATCH GENERATE (The "Freeze" Warning)
-            // We loop through all found images and create the .thumb files now.
-            // In a real app, this goes to a thread. Here, it will block.
-            let path_ref = self.temp_dir.path();
-            for img_path in &self.images {
-                let thumb_path = cache::paths::get_thumb_path(img_path, path_ref);
-                cache::thumbnails::generate_thumbnail(img_path, &thumb_path);
-            }
+            let images_all = self.images.clone();
+            let temp_path = self.temp_dir.path().to_path_buf();
+
+            thread::spawn(move || {
+                if images_all.is_empty() { return; }
+
+                let available_cores = thread::available_parallelism()
+                .map(|n| n.get())
+                .unwrap_or(1);
+
+                let num_threads = (available_cores as f32 * 0.8).floor() as usize;
+
+                print!("Number of active spawn threads = {:?}", num_threads.to_string());
+
+                let num_threads = num_threads.max(1).min(images_all.len());
+
+                let chunk_size = (images_all.len() + num_threads -1) / num_threads;
+
+                for chunk in images_all.chunks(chunk_size) {
+                    let chunk_owned = chunk.to_vec();
+                    let t_path_ref = temp_path.clone();
+
+                    thread::spawn(move || {
+                        for img_path in chunk_owned {
+                            let thumb_path = cache::paths::get_thumb_path(&img_path, &t_path_ref);
+                        
+                            cache::thumbnails::generate_thumbnail(&img_path, &thumb_path);
+                        }
+                    });
+                }
+            });
         }
 
         if self.selected_image != previous_selection {
             if let Some(path) = &self.selected_image {
                 if let Some(color_image) = io::load_image::load_image(path) {
                     self.current_texture = Some(ctx.load_texture(
-                        "active_image", 
+                        "active_image",
                         color_image,
                         Default::default()
                     ));
                 }
-            }
-            else {
+            } else {
                 self.current_texture = None;
             }
         }
