@@ -1,5 +1,5 @@
 use egui::Ui;
 
-pub fn draw_info(ui: &mut Ui) {
+pub fn draw_metadata(ui: &mut Ui) {
     ui.heading("Info / EXIF");
 }

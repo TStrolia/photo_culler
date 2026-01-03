@@ -51,36 +51,56 @@ impl App for PhotoCullerApp {
         let previous_path = self.current_path.clone();
         let previous_selection = self.selected_image.clone();
 
+        egui::TopBottomPanel::bottom("info_bar")
+            .exact_height(24.0)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui::draw_infobar::draw_infobar(ui);
+            });
+
         egui::SidePanel::left("file_tree")
-        .default_width(325.0)
-        .min_width(250.0)
-        .resizable(true)
-        .show(ctx, |ui| {
-            let root = PathBuf::from(".");
-            ui::draw_tree::draw_tree(ui, &root, &mut self.current_path);
-        });
+            .default_width(325.0)
+            .min_width(250.0)
+            .resizable(true)
+            .show(ctx, |ui| {
+                egui::ScrollArea::vertical()
+                    .id_salt("file_tree_scroll")
+                    .show(ui, |ui| {
+                        ui.set_min_width(ui.available_width());
+
+                        let root = PathBuf::from(".");
+                        ui::draw_tree::draw_tree(ui, &root, &mut self.current_path);
+                });
+            });
 
         egui::TopBottomPanel::bottom("thumb_filmstrip")
-        .exact_height(160.0)
-        .resizable(false)
-        .show(ctx, |ui| {
-            ui::draw_filmstrip::draw_filmstrip(
-                ui,
-                &self.images,
-                &mut self.selected_image,
-                &mut self.thumbnail_cache,
-                &self.temp_dir,
-                ctx
-            );
-        });
+            .exact_height(160.0)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui::draw_filmstrip::draw_filmstrip(
+                    ui,
+                    &self.images,
+                    &mut self.selected_image,
+                    &mut self.thumbnail_cache,
+                    &self.temp_dir,
+                    ctx
+                );
+            });
 
         egui::SidePanel::right("metadata")
-        .default_width(450.0)
-        .width_range(275.0..=700.0)
-        .resizable(true)
-        .show(ctx, |ui| {
-            ui::draw_info::draw_info(ui);
-        });
+            .default_width(450.0)
+            .width_range(275.0..=700.0)
+            .resizable(true)
+            .show(ctx, |ui| {
+                egui::ScrollArea::vertical()
+                    .id_salt("metadata_scroll")
+                    .show(ui, |ui| {
+                        ui.set_min_width(ui.available_width());
+                        ui::draw_metadata::draw_metadata(ui);
+                });
+            
+            });
+        
 
         egui::CentralPanel::default().show(ctx, |ui| {
             ui::draw_viewer::draw_viewer(ui, &self.current_texture);

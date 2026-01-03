@@ -1,6 +1,8 @@
 use egui::{Context, TextureHandle, Ui, response};
 use std::path::{Path, PathBuf};
 use std::collections::{HashMap, HashSet};
+
+use crate::ui::components;
 use crate::cache;
 
 pub fn draw_filmstrip(
@@ -11,26 +13,10 @@ pub fn draw_filmstrip(
     temp_dir: &tempfile::TempDir,
     ctx: &Context,
 ) {
-    ui.heading("Filmstrip");
-
-    // const WINDOW_SIZE: usize = 25;
-
-    // let current_idx = if let Some(sel) = selection {
-    //     images.iter().position(|p| p ==sel).unwrap_or(0)
-    // } else {
-    //     0
-    // };
-
-    // let start_idx = current_idx.saturating_sub(WINDOW_SIZE);
-    // let end_idx = (current_idx + WINDOW_SIZE).min(images.len());
-
-    // let valid_window: HashSet<&PathBuf> = images[start_idx..end_idx].iter().collect();
-
-    // thumb_cache.retain(|path, _| valid_window.contains(path));
-
     let mut visible_paths = HashSet::new();
     
     egui::ScrollArea::horizontal().show(ui, |ui| {
+        ui.set_min_height(ui.available_height());
         ui.horizontal(|ui| {
             let view_rect = ui.clip_rect().expand(2500.0);
 
