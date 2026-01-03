@@ -2,7 +2,7 @@ use egui::{Context, TextureHandle, Ui};
 use std::path::{PathBuf};
 use std::collections::{HashMap, HashSet};
 
-use crate::ui::components;
+use crate::ui::components::buttons::filmstrip_frame::{self, film_frame};
 use crate::cache;
 
 pub fn draw_filmstrip(
@@ -30,10 +30,13 @@ pub fn draw_filmstrip(
                 let texture = thumb_cache.get(path);
 
                 let response = if let Some(tex) = texture {
-                    let btn = egui::Button::image(egui::Image::new(tex))
-                        .selected(is_selected);
-
-                    ui.add(btn)
+                    filmstrip_frame::film_frame(
+                        ui,
+                        egui::Image::new(tex),
+                        name.as_ref(),
+                        140.0,
+                        is_selected
+                    )
                 } else {
                     ui.selectable_label(is_selected, name.as_ref())
                 };
@@ -59,4 +62,6 @@ pub fn draw_filmstrip(
             }
         });
     });
+
+    thumb_cache.retain(|path, _| visible_paths.contains(path));
 }
