@@ -1,5 +1,5 @@
 use eframe::{egui};
-use egui::{Ui, Frame, Sense, Stroke, LayerId, Order, StrokeKind, Color32};
+use egui::{Ui, Frame, Sense, Stroke, StrokeKind, Color32, Shape, CornerRadius, Rect};
 
 pub fn film_frame(
     ui: &mut Ui,
@@ -12,6 +12,8 @@ pub fn film_frame(
     const RADIUS: u8 = 4;
     const IMAGE_HEIGHT: f32 = 128.0;
 
+    let bg_shape_idx = ui.painter().add(Shape::Noop);
+
     let content_response = Frame::default()
         .fill(Color32::TRANSPARENT)
         .stroke(Stroke::NONE)
@@ -21,12 +23,8 @@ pub fn film_frame(
             ui.set_min_width(94.0 - (PADDING * 2.0));
             ui.set_max_width(250.0 - (PADDING * 2.0));
 
-            ui.vertical(|ui| {
-                ui.centered_and_justified(|ui| {
-                    ui.add(
-                image.max_height(IMAGE_HEIGHT)
-                    );
-                });
+            ui.vertical_centered(|ui| {
+                    ui.add(image.max_height(IMAGE_HEIGHT));
 
                 ui.vertical_centered(|ui|{
                     ui.label(
@@ -69,12 +67,15 @@ pub fn film_frame(
     };
 
 
-    ui.ctx().layer_painter(LayerId::new(Order::Background, ui.id())).rect(
-        rect,
-        RADIUS,
-        bg_fill,
-        border_stroke,
-        StrokeKind::Inside,
+    ui.painter().set(
+        bg_shape_idx,
+        Shape::Rect(egui::epaint::RectShape::new(
+            rect,
+            CornerRadius::from(RADIUS), // Explicitly use CornerRadius
+            bg_fill,
+            border_stroke,
+            StrokeKind::Inside, 
+        )),
     );
 
     response

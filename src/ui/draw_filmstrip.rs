@@ -1,4 +1,4 @@
-use egui::{Context, TextureHandle, Ui};
+use egui::{Context, TextureHandle, Ui, Layout, Align};
 use std::path::{PathBuf};
 use std::collections::{HashMap, HashSet};
 
@@ -17,7 +17,7 @@ pub fn draw_filmstrip(
     
     egui::ScrollArea::horizontal().show(ui, |ui| {
         ui.set_min_height(ui.available_height());
-        ui.horizontal(|ui| {
+        ui.with_layout(Layout::left_to_right(Align::Min), |ui| {
             let view_rect = ui.clip_rect().expand(2500.0);
 
             for path in images {
@@ -34,7 +34,7 @@ pub fn draw_filmstrip(
                         ui,
                         egui::Image::new(tex),
                         name.as_ref(),
-                        140.0,
+                        160.0,
                         is_selected
                     )
                 } else {

@@ -74,7 +74,7 @@ impl App for PhotoCullerApp {
             });
 
         egui::TopBottomPanel::bottom("thumb_filmstrip")
-            .exact_height(160.0)
+            .exact_height(175.0)
             .resizable(false)
             .show(ctx, |ui| {
                 ui::draw_filmstrip::draw_filmstrip(
