@@ -1,5 +1,5 @@
 use eframe::{egui};
-use egui::{Ui, Frame, Sense, Stroke, StrokeKind, Color32, Shape, CornerRadius, Rect};
+use egui::{Ui, Frame, Sense, Stroke, StrokeKind, Color32, Shape, Rect, CornerRadius, Layout, Align};
 
 pub fn film_frame(
     ui: &mut Ui,
@@ -19,24 +19,22 @@ pub fn film_frame(
         .stroke(Stroke::NONE)
         .inner_margin(PADDING)
         .show(ui, |ui| {
+            // Constraints
             ui.set_height(height - (PADDING * 2.0));
-            ui.set_min_width(94.0 - (PADDING * 2.0));
-            ui.set_max_width(250.0 - (PADDING * 2.0));
+            ui.set_width(200.0);
 
-            ui.vertical_centered(|ui| {
-                    ui.add(image.max_height(IMAGE_HEIGHT));
+            ui.with_layout(Layout::top_down(Align::Center), |ui| {
+                ui.add(image.max_height(IMAGE_HEIGHT));
 
-                ui.vertical_centered(|ui|{
-                    ui.label(
-                        egui::RichText::new(text)
-                            .size(12.0)
-                            .color(if selected {
-                                ui.visuals().strong_text_color()
-                            } else {
-                                ui.visuals().text_color()
-                            })
-                    )
-                });
+                ui.label(
+                    egui::RichText::new(text)
+                        .size(11.0)
+                        .color(if selected {
+                            ui.visuals().strong_text_color()
+                        } else {
+                            ui.visuals().text_color()
+                        })
+                );
             });
         })
         .response;
