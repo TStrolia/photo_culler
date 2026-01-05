@@ -44,7 +44,7 @@ pub fn film_frame(
     let id = ui.make_persistent_id(text);
     let response = ui.interact(rect, id, Sense::click());
 
-    let visuals = ui.style().interact_selectable(&response, selected);
+    // let visuals = ui.style().interact_selectable(&response, selected);
 
 
     let bg_fill = if selected {
